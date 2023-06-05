@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1685534940 source:d:\e19\sem4\co253 - programming for ee students\new folder (2)\e19328_project\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
