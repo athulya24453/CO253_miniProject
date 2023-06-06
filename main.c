@@ -219,7 +219,7 @@ void addContact()
     enableEcho();
     printf("\n");
 
-    // strcpy(newContact.added_user, cur_username);
+    strcpy(newContact.added_user, log_user.username);
 
     if (!(strcmp(cur_username, log_user.username)))
     {
@@ -348,15 +348,23 @@ void deleteContact()
 
             else
             {
-
-                for (i; i < no_contacts - 1; i++)
+                if (!(strcmp(contacts[i].added_user, log_user.username)))
                 {
-                    contacts[i] = contacts[i + 1];
+
+                    for (i; i < no_contacts - 1; i++)
+                    {
+                        contacts[i] = contacts[i + 1];
+                    }
+
+                    no_contacts--;
+                    printf("Contact has been deleted.\n");
+                    home_page();
                 }
 
-                no_contacts--;
-                printf("Contact has been deleted.\n");
-                home_page();
+                else
+                {
+                    printf("You can't delete contacts added by other users.\a\n");
+                }
             }
         }
 
