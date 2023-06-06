@@ -71,6 +71,23 @@ void searchContact();
 void deleteContact();
 void contact_list();
 
+void clearInputBuffer()
+{
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF)
+    {
+        // Discard characters
+    }
+}
+
+void cont_page()
+{
+    printf("Press enter to continue\n");
+    clearInputBuffer();
+    getchar();
+    printf("Continuing...\n");
+}
+
 void home_page()
 {
     int res3; // respose at the home page
@@ -221,9 +238,11 @@ void addContact()
 
     strcpy(newContact.added_user, log_user.username);
 
-        printf("Contact Added Successfully.\n");
+    printf("Contact Added Successfully.\n");
     contacts[no_contacts] = newContact;
     no_contacts++;
+
+    cont_page();
     home_page();
 }
 
@@ -261,6 +280,7 @@ void searchContact()
         printf("Telephone Number: %s\n", contacts[i].tpnum);
         printf("Address: %s\n", contacts[i].address);
         printf("Email: %s\n", contacts[i].email);
+        cont_page();
         home_page();
     }
 
@@ -351,12 +371,15 @@ void deleteContact()
 
                     no_contacts--;
                     printf("Contact has been deleted.\n");
+                    cont_page();
                     home_page();
                 }
 
                 else
                 {
                     printf("You can't delete contacts added by other users.\a\n");
+                    cont_page();
+                    home_page();
                 }
             }
         }
@@ -386,14 +409,26 @@ void deleteContact()
             else
             {
 
-                for (i; i < no_contacts - 1; i++)
+                if (!(strcmp(contacts[i].added_user, log_user.username)))
                 {
-                    contacts[i] = contacts[i + 1];
+
+                    for (i; i < no_contacts - 1; i++)
+                    {
+                        contacts[i] = contacts[i + 1];
+                    }
+
+                    no_contacts--;
+                    printf("Contact has been deleted.\n");
+                    cont_page();
+                    home_page();
                 }
 
-                no_contacts--;
-                printf("Contact has been deleted.\n");
-                home_page();
+                else
+                {
+                    printf("You can't delete contacts added by other users.\a\n");
+                    cont_page();
+                    home_page();
+                }
             }
         }
     }
@@ -416,6 +451,7 @@ void contact_list()
         {
             printf("%s\t%s\t\n", contacts[i].name, contacts[i].tpnum);
         }
+        cont_page();
         home_page();
     }
 
