@@ -5,8 +5,8 @@
 #include <termios.h>
 #include <unistd.h>
 
-#define maximum_contacts 50
-#define maximum_users 100
+#define maximum_contacts 10
+#define maximum_users 10
 
 typedef struct
 {
@@ -76,6 +76,7 @@ void home_page()
     int res3; // respose at the home page
 
     printf("------------Home------------\n");
+    printf("Logged in as %s\n", log_user.username);
     printf("1. Add Contact\n2. Search Contact\n3. Delete Contact\n4. Contact List\n5. Log Out\n");
     printf("Enter an option: ");
     scanf("%d", &res3);
@@ -107,7 +108,7 @@ void home_page()
 
     else
     {
-        printf("Invalid input.\n");
+        printf("Invalid input.\a\n");
         home_page();
     }
 }
@@ -123,17 +124,18 @@ void login_page()
     disableEcho();
     scanf("%s", cur_user.password);
     enableEcho();
+    printf("\n");
 
     if (login_checker(cur_user))
     {
-        printf("logging successful!!\n");
+        printf("logged in successfully!!\n");
         log_user = cur_user;
         home_page();
     }
 
     else
     {
-        printf("Invalid Username or Password.\n");
+        printf("Invalid Username or Password.\a\n");
         start_page();
     }
 }
@@ -167,7 +169,7 @@ void signup_page()
 
     else
     {
-        printf("Password does not match.\n");
+        printf("Password does not match.\a\n");
         signup_page();
     }
 
@@ -184,6 +186,12 @@ void signup_page()
     else if (res2 == 2)
     {
         signup_page();
+    }
+
+    else
+    {
+        printf("Invalid input\a\n");
+        start_page();
     }
 }
 
@@ -205,10 +213,11 @@ void addContact()
 
     printf("Enter your username: ");
     scanf("%s", cur_username);
-    printf("Enter your password: \n");
+    printf("Enter your password: ");
     disableEcho();
     scanf("%s", cur_pw);
     enableEcho();
+    printf("\n");
 
     // strcpy(newContact.added_user, cur_username);
 
@@ -225,9 +234,10 @@ void addContact()
 
     else
     {
-        printf("Invalid username password combination.\n");
+        printf("Invalid username password combination.\a\n");
         home_page();
     }
+    home_page();
 }
 
 void searchContact()
@@ -264,6 +274,7 @@ void searchContact()
         printf("Telephone Number: %s\n", contacts[i].tpnum);
         printf("Address: %s\n", contacts[i].address);
         printf("Email: %s\n", contacts[i].email);
+        home_page();
     }
 
     else if (res4 == 2)
@@ -298,10 +309,11 @@ void deleteContact()
     char en_pw[20];
     printf("Enter your username: ");
     scanf("%s", en_username);
-    printf("Enter your password: \n");
+    printf("Enter your password: ");
     disableEcho();
     scanf("%s", en_pw);
     enableEcho();
+    printf("\n");
     char del_name[20];
     char del_tp[20];
     int res5; // response in delete contact page
@@ -330,7 +342,8 @@ void deleteContact()
 
             if (i == no_contacts)
             {
-                printf("Invalid name.\n");
+                printf("Invalid name.\a\n");
+                home_page();
             }
 
             else
@@ -365,7 +378,8 @@ void deleteContact()
 
             if (i == no_contacts)
             {
-                printf("Invalid telephone number.\n");
+                printf("Invalid telephone number.\a\n");
+                home_page();
             }
 
             else
@@ -385,7 +399,7 @@ void deleteContact()
 
     else
     {
-        printf("Invalid username password combination.");
+        printf("Invalid username password combination.\a\n");
         home_page();
     }
 }
@@ -393,12 +407,22 @@ void deleteContact()
 void contact_list()
 {
     printf("------------Contact List------------\n");
-    printf("name\ttelephone\t\n");
-    for (int i = 0; i < no_contacts; i++)
+
+    if (no_contacts)
     {
-        printf("%s\t%s\t\n", contacts[i].name, contacts[i].tpnum);
+        printf("name\ttelephone\t\n");
+        for (int i = 0; i < no_contacts; i++)
+        {
+            printf("%s\t%s\t\n", contacts[i].name, contacts[i].tpnum);
+        }
+        home_page();
     }
-    home_page();
+
+    else
+    {
+        printf("No contacts to show.\n");
+        home_page();
+    }
 }
 
 void start_page()
