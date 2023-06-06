@@ -193,7 +193,7 @@ void addContact()
     char cur_username[20];
     char cur_pw[20];
 
-    printf("------------Sign Up------------\n");
+    printf("------------Add Contact------------\n");
     printf("Enter name: ");
     scanf("%s", newContact.name);
     printf("Enter telephone number: ");
@@ -316,6 +316,35 @@ void deleteContact()
         {
             printf("Enter the name you want to delete: ");
             scanf("%s", del_name);
+
+            int i = 0;
+
+            while (strcmp(del_name, contacts[i].name))
+            {
+                i++;
+                if (i == no_contacts)
+                {
+                    break;
+                }
+            }
+
+            if (i == no_contacts)
+            {
+                printf("Invalid name.\n");
+            }
+
+            else
+            {
+
+                for (i; i < no_contacts - 1; i++)
+                {
+                    contacts[i] = contacts[i + 1];
+                }
+
+                no_contacts--;
+                printf("Contact has been deleted.\n");
+                home_page();
+            }
         }
 
         else if (res5 == 2)
