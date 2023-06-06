@@ -350,7 +350,36 @@ void deleteContact()
         else if (res5 == 2)
         {
             printf("Enter the telephone number you want to delete: ");
-            scanf("%s", del_name);
+            scanf("%s", del_tp);
+
+            int i = 0;
+
+            while (strcmp(del_tp, contacts[i].tpnum))
+            {
+                i++;
+                if (i == no_contacts)
+                {
+                    break;
+                }
+            }
+
+            if (i == no_contacts)
+            {
+                printf("Invalid telephone number.\n");
+            }
+
+            else
+            {
+
+                for (i; i < no_contacts - 1; i++)
+                {
+                    contacts[i] = contacts[i + 1];
+                }
+
+                no_contacts--;
+                printf("Contact has been deleted.\n");
+                home_page();
+            }
         }
     }
 
