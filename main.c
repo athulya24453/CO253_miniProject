@@ -211,32 +211,19 @@ void addContact()
     printf("Enter email address: ");
     scanf("%s", newContact.email);
 
-    printf("Enter your username: ");
-    scanf("%s", cur_username);
-    printf("Enter your password: ");
-    disableEcho();
-    scanf("%s", cur_pw);
-    enableEcho();
-    printf("\n");
+    // printf("Enter your username: ");
+    // scanf("%s", cur_username);
+    // printf("Enter your password: ");
+    // disableEcho();
+    // scanf("%s", cur_pw);
+    // enableEcho();
+    // printf("\n");
 
     strcpy(newContact.added_user, log_user.username);
 
-    if (!(strcmp(cur_username, log_user.username)))
-    {
-        if (!(strcmp(cur_pw, log_user.password)))
-        {
-            printf("Contact Added Successfully.\n");
-            contacts[no_contacts] = newContact;
-            no_contacts++;
-            home_page();
-        }
-    }
-
-    else
-    {
-        printf("Invalid username password combination.\a\n");
-        home_page();
-    }
+        printf("Contact Added Successfully.\n");
+    contacts[no_contacts] = newContact;
+    no_contacts++;
     home_page();
 }
 
@@ -300,6 +287,12 @@ void searchContact()
         printf("Telephone Number: %s\n", contacts[i].tpnum);
         printf("Address: %s\n", contacts[i].address);
         printf("Email: %s\n", contacts[i].email);
+    }
+
+    else
+    {
+        printf("Invalid input.\n");
+        home_page();
     }
 }
 
