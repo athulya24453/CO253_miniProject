@@ -5,19 +5,21 @@
 #include <termios.h>
 #include <unistd.h>
 
-#define maximum_contacts 10
-#define maximum_users 10
+#define maximum_contacts 50 // maximum number of contacts can be stored in the system
+#define maximum_users 50    // maximum number of uers can be stored in the system
 
+// struct to keep information about users signing up
 typedef struct
 {
     char username[20];
     char password[20];
 } user_t;
 
-user_t users[maximum_users];
+user_t users[maximum_users]; // stores user_t elements
 
 int no_users = 0; // number of users in user_t struct
 
+// struct to keep information about contacts added to the system
 typedef struct
 {
     char name[20];
@@ -27,12 +29,13 @@ typedef struct
     char added_user[20];
 } contact_t;
 
-contact_t contacts[maximum_contacts];
+contact_t contacts[maximum_contacts]; // stores contact_t elements
 
 int no_contacts = 0; // number of contacts stored in contacts_t struct
 
 void disableEcho()
 {
+    // make the text field invisible when a password is entered
     struct termios term;
     tcgetattr(STDIN_FILENO, &term);
     term.c_lflag &= ~ECHO;
@@ -41,16 +44,18 @@ void disableEcho()
 
 void enableEcho()
 {
+    // make the text fields visible after the password
     struct termios term;
     tcgetattr(STDIN_FILENO, &term);
     term.c_lflag |= ECHO;
     tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }
 
-user_t log_user;
+user_t log_user; // to store information about current user
 
 bool login_checker(user_t user)
 {
+    // compares username and password entered by the user and returns true if compatible
     for (int i = 0; i <= no_users; i++)
     {
         if (strcmp(users[i].username, user.username) == 0)
@@ -64,7 +69,7 @@ bool login_checker(user_t user)
     return false;
 }
 
-void start_page();
+void start_page(); // first page of the application
 
 void addContact();
 void searchContact();
@@ -73,6 +78,7 @@ void contact_list();
 
 void clearInputBuffer()
 {
+    // clears the input buffer before calling the getchar() function
     int c;
     while ((c = getchar()) != '\n' && c != EOF)
     {
@@ -82,6 +88,8 @@ void clearInputBuffer()
 
 void cont_page()
 {
+    // prints "press enter to continue"
+    // procedes when an enter is entered
     printf("Press enter to continue\n");
     clearInputBuffer();
     getchar();
@@ -90,6 +98,10 @@ void cont_page()
 
 void home_page()
 {
+    // home page after logging in
+    // shows features of the application
+    // directed to corresponding page to the input entered
+
     int res3; // respose at the home page
 
     printf("------------Home------------\n");
@@ -100,38 +112,48 @@ void home_page()
 
     if (res3 == 1)
     {
+        system("clear");
         addContact();
     }
 
     else if (res3 == 2)
     {
+        system("clear");
         searchContact();
     }
 
     else if (res3 == 3)
     {
+        system("clear");
         deleteContact();
     }
 
     else if (res3 == 4)
     {
+        system("clear");
         contact_list();
     }
 
     else if (res3 == 5)
     {
+        system("clear");
         start_page();
     }
 
     else
     {
+        system("clear");
         printf("Invalid input.\a\n");
+        cont_page();
         home_page();
     }
 }
 
 void login_page()
 {
+    // asks for username and password
+    // compared by the login_checker() function
+
     user_t cur_user;
 
     printf("------------Log In------------\n");
@@ -145,20 +167,28 @@ void login_page()
 
     if (login_checker(cur_user))
     {
-        printf("logged in successfully!!\n");
+        system("clear");
         log_user = cur_user;
         home_page();
     }
 
     else
     {
+        system("clear");
         printf("Invalid Username or Password.\a\n");
+        cont_page();
+        system("clear");
         start_page();
     }
 }
 
 void signup_page()
 {
+    // to create new accounts
+    // asks for username and password
+    // prompts to re-enter the password
+    // account will be created if two passwords are matching
+
     int res2; // response after sign up
     user_t newUser;
     char com_pw[20]; // compare the password
@@ -180,13 +210,19 @@ void signup_page()
     if (!(strcmp(newUser.password, com_pw)))
     {
         printf("Sign Up Succssfull.\n");
+        cont_page();
+
         users[no_users] = newUser;
+        system("clear");
         no_users++;
     }
 
     else
     {
+        system("clear");
         printf("Password does not match.\a\n");
+        cont_page();
+        system("clear");
         signup_page();
     }
 
@@ -197,44 +233,43 @@ void signup_page()
 
     if (res2 == 1)
     {
+        system("clear");
         login_page();
     }
 
     else if (res2 == 2)
     {
+        system("clear");
         signup_page();
     }
 
     else
     {
+        system("clear");
         printf("Invalid input\a\n");
+        cont_page();
+        system("clear");
         start_page();
     }
 }
 
 void addContact()
 {
+    // adds information of contacts
+
     contact_t newContact;
     char cur_username[20];
     char cur_pw[20];
 
     printf("------------Add Contact------------\n");
     printf("Enter name: ");
-    scanf("%s", newContact.name);
+    scanf(" %[^\n]", newContact.name);
     printf("Enter telephone number: ");
     scanf("%s", newContact.tpnum);
     printf("Enter address: ");
-    scanf("%s", newContact.address);
+    scanf(" %[^\n]", newContact.address);
     printf("Enter email address: ");
     scanf("%s", newContact.email);
-
-    // printf("Enter your username: ");
-    // scanf("%s", cur_username);
-    // printf("Enter your password: ");
-    // disableEcho();
-    // scanf("%s", cur_pw);
-    // enableEcho();
-    // printf("\n");
 
     strcpy(newContact.added_user, log_user.username);
 
@@ -243,11 +278,14 @@ void addContact()
     no_contacts++;
 
     cont_page();
+    system("clear");
     home_page();
 }
 
 void searchContact()
 {
+    // search contacts by their name or the telephone number
+
     int res4;
     char ser_name[20];
     char ser_tp[20];
@@ -260,7 +298,7 @@ void searchContact()
     if (res4 == 1)
     {
         printf("Enter the name: ");
-        scanf("%s", ser_name);
+        scanf(" %[^\n]", ser_name);
 
         int i;
         for (i = 0; i < no_contacts; i++)
@@ -269,18 +307,15 @@ void searchContact()
             {
                 break;
             }
-
-            // if (i = no_contacts - 1)
-            // {
-            //     return;
-            // }
         }
 
+        system("clear");
         printf("Name: %s\n", contacts[i].name);
         printf("Telephone Number: %s\n", contacts[i].tpnum);
         printf("Address: %s\n", contacts[i].address);
         printf("Email: %s\n", contacts[i].email);
         cont_page();
+        system("clear");
         home_page();
     }
 
@@ -296,28 +331,33 @@ void searchContact()
             {
                 break;
             }
-
-            // if (i = no_contacts - 1)
-            // {
-            //     return;
-            // }
         }
 
+        system("clear");
         printf("Name: %s\n", contacts[i].name);
         printf("Telephone Number: %s\n", contacts[i].tpnum);
         printf("Address: %s\n", contacts[i].address);
         printf("Email: %s\n", contacts[i].email);
+        cont_page();
+        system("clear");
+        home_page();
     }
 
     else
     {
         printf("Invalid input.\n");
+        cont_page();
+        system("clear");
         home_page();
     }
 }
 
 void deleteContact()
 {
+    // asks for the username and password of the user
+    // if it is correct directed to the delete page
+    // can delete cantacts by searching by name and telephone number
+
     char en_username[20];
     char en_pw[20];
     printf("Enter your username: ");
@@ -332,6 +372,7 @@ void deleteContact()
     int res5; // response in delete contact page
     if (!(strcmp(en_username, log_user.username)))
     {
+        system("clear");
         printf("------------Search Contact------------\n");
         printf("1. Search by name\n2. Search by Telephone Number\n");
         printf("Enter an option: ");
@@ -339,8 +380,9 @@ void deleteContact()
 
         if (res5 == 1)
         {
+            system("clear");
             printf("Enter the name you want to delete: ");
-            scanf("%s", del_name);
+            scanf(" %[^\n]", del_name);
 
             int i = 0;
 
@@ -355,7 +397,10 @@ void deleteContact()
 
             if (i == no_contacts)
             {
+
                 printf("Invalid name.\a\n");
+                cont_page();
+                system("clear");
                 home_page();
             }
 
@@ -372,6 +417,7 @@ void deleteContact()
                     no_contacts--;
                     printf("Contact has been deleted.\n");
                     cont_page();
+                    system("clear");
                     home_page();
                 }
 
@@ -379,6 +425,7 @@ void deleteContact()
                 {
                     printf("You can't delete contacts added by other users.\a\n");
                     cont_page();
+                    system("clear");
                     home_page();
                 }
             }
@@ -386,6 +433,7 @@ void deleteContact()
 
         else if (res5 == 2)
         {
+            system("clear");
             printf("Enter the telephone number you want to delete: ");
             scanf("%s", del_tp);
 
@@ -403,6 +451,8 @@ void deleteContact()
             if (i == no_contacts)
             {
                 printf("Invalid telephone number.\a\n");
+                cont_page();
+                system("clear");
                 home_page();
             }
 
@@ -420,6 +470,7 @@ void deleteContact()
                     no_contacts--;
                     printf("Contact has been deleted.\n");
                     cont_page();
+                    system("clear");
                     home_page();
                 }
 
@@ -427,6 +478,7 @@ void deleteContact()
                 {
                     printf("You can't delete contacts added by other users.\a\n");
                     cont_page();
+                    system("clear");
                     home_page();
                 }
             }
@@ -436,34 +488,49 @@ void deleteContact()
     else
     {
         printf("Invalid username password combination.\a\n");
+        cont_page();
+        system("clear");
         home_page();
     }
 }
 
 void contact_list()
 {
+    // lists contacts stored in the system
+    // prints "no contacts to show" when the contacts array is empty
+    system("clear");
     printf("------------Contact List------------\n");
 
     if (no_contacts)
     {
-        printf("name\ttelephone\t\n");
+        printf("+-------------------------+---------------+------------------------------------------------|------------------------|\n");
+        printf("|Name                     |Telephone      |Address                                         |email                   |\n");
+        printf("+-------------------------+---------------+------------------------------------------------|------------------------|\n");
         for (int i = 0; i < no_contacts; i++)
         {
-            printf("%s\t%s\t\n", contacts[i].name, contacts[i].tpnum);
+            // printf("%s\t%s\t\n", contacts[i].name, contacts[i].tpnum);
+            printf("|%-25s|%-15s|%-48s|%-24s|\n", contacts[i].name, contacts[i].tpnum, contacts[i].address, contacts[i].email);
         }
+        printf("+-------------------------+---------------+------------------------------------------------|------------------------|\n");
         cont_page();
+        system("clear");
         home_page();
     }
 
     else
     {
+        system("clear");
         printf("No contacts to show.\n");
+        cont_page();
+        system("clear");
         home_page();
     }
 }
 
 void start_page()
 {
+    // initial page of the application
+
     int res1; // respond to login or sign up
 
     printf("-------------------------------------\n");
@@ -475,29 +542,35 @@ void start_page()
 
     if (res1 == 1)
     {
+        system("clear");
         login_page();
     }
 
     else if (res1 == 2)
     {
+        system("clear");
         signup_page();
     }
 
     else if (res1 == 3)
     {
+        system("clear");
         exit(0);
     }
 
     else
     {
+        system("clear");
         printf("Invalid Input!!\n");
+        cont_page();
+        system("clear");
         home_page();
     }
 }
 
 int main()
 {
-    bool logged = false;
+    system("clear");
 
     start_page();
 
